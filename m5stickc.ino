@@ -27,12 +27,15 @@ int nDown = 0;
 int nLeft = 0;
 int nRight = 0;
 int nStop = 0;
+int nClick = 0;
 int threshold = 4;
 enum position headState;
+int micVol = 0;
 
 int headup = 0;
 int btnA = 39; // SELECT BUTTON 
 int btnB = 37; // MENU BUTTON
+int micPin = 26; // External Microphone MAX4466
 
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
@@ -63,6 +66,14 @@ void setup() {
 void loop() {
     static float temp = 0;
     M5.IMU.getGyroData(&gyroX, &gyroY, &gyroZ);
+
+    micVol = analogRead(micPin);
+    if(micVol > 3500 || micVol < 1){
+      nClick++;
+    }else{
+      nClick = 0;
+    }
+
 
     // Head move? add position count: add normal count;
     if((gyroY > 0) || (gyroY < -14) || (gyroZ < 0) || (gyroZ > 10)){
@@ -120,7 +131,7 @@ void loop() {
 
     if (headup>0 && headup<3){
       Serial.printf("Value: %5.2f   %5.2f   %5.2f\n", gyroX, gyroY, gyroZ);
-      // Serial.println(positionStr[headState]);
+      Serial.println(positionStr[headState]);
       // bluetoothSend(positionStr[headState]);
       if (headState == up){
         M5.Lcd.setCursor(30, 50);
@@ -144,6 +155,11 @@ void loop() {
         bluetoothSend("o");
       }
       
+      if(nClick == 1){
+        M5.Lcd.printf(" CLICK  ");
+        bluetoothSend("c");
+      }
+
     }
     
     if (digitalRead(btnA) == LOW) {
@@ -168,7 +184,7 @@ void nReset(){
 
 void bluetoothSend(String line)
 {
-    Serial.printf("%s", line);
+    // Serial.printf("%s", line);
     unsigned l = line.length();
     for(int i=0; i<l; i++)
     {
