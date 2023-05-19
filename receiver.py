@@ -2,9 +2,9 @@ import bluetooth
 import pyautogui
 # pip3 install pyautogui
 
-device_name = ""
-# device_mac = ""
-device_mac = ""
+device_name = "contactlessMouse"
+# device_mac = "CC:50:E3:95:DF:7A"
+device_mac = "0C:8B:95:A5:93:7A"
 device_port = 1
 distance_cursor = 50
 
@@ -14,11 +14,11 @@ def execute(cmd):
         if cmd[-1] == "u":
             pyautogui.moveRel(0, -distance_cursor, duration = 0.5)
         elif cmd[-1] == "d":
-            pyautogui.moveRel(0, -distance_cursor, duration = 0.5)
+            pyautogui.moveRel(0, distance_cursor, duration = 0.5)
         elif cmd[-1] == "l":
-            pyautogui.moveRel(0, -distance_cursor, duration = 0.5)
+            pyautogui.moveRel(-distance_cursor, 0, duration = 0.5)
         elif cmd[-1] == "r":
-            pyautogui.moveRel(0, -distance_cursor, duration = 0.5)
+            pyautogui.moveRel(distance_cursor, 0, duration = 0.5)
     elif cmd[0] == "c":
         x,y = pyautogui.position()
         pyautogui.click(x, y)
